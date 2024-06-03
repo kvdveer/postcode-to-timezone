@@ -5,6 +5,8 @@ postcodes are roughly following the timezone lines. This is not always true,
 especially in disputed territories, but it is a good approximation for most
 cases.
 
+The data used for this lookup is indirectly from OpenStreetMap.
+
 ## Usage example
 
 ```python
