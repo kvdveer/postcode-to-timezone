@@ -29,7 +29,7 @@ def log_time(func):
 @log_time
 def load_postcode_database():
     # Load the postcodes and their lon/lat from the CSV file
-    return pd.read_csv(
+    result = pd.read_csv(
         './location_postcode.csv.xz',
         converters={
             'postcode': str,
@@ -37,6 +37,8 @@ def load_postcode_database():
             'geometry': str,
         },
     )
+    result.country_code = result.country_code.str.lower()
+    return result
 
 
 @log_time
@@ -56,15 +58,19 @@ def parse_geometry(postcodes):
     return postcodes
 
 
+def normalize_postcode(lon, lat):
+    return postcode_to_timezone.normalize_postcode(lon, lat, validate=True)
+
 @log_time
 def normalize_postcodes(postcodes):
     logger.info('Normalizing %d postcodes', len(postcodes))
     with multiprocessing.Pool() as pool:
-        postcodes['postcode'] = pool.starmap(
-            postcode_to_timezone.normalize_postcode,
+        postcodes.loc[:, 'postcode'] = pool.starmap(
+            normalize_postcode,
             postcodes[['country_code', 'postcode']].itertuples(index=False,
                                                                name=None),
         )
+
     postcodes = postcodes.dropna(subset=['postcode'])
 
     return postcodes
@@ -119,12 +125,14 @@ def build_lookup_table(postcodes):
 
 def main():
     postcodes = load_postcode_database()
-    postcodes = parse_geometry(postcodes)
     postcodes = normalize_postcodes(postcodes)
+
+    postcodes = parse_geometry(postcodes)
     postcodes = lookup_timezones(postcodes)
     lookup_table = build_lookup_table(postcodes)
-    db_path = pathlib.Path(__file__).parent / 'postcode_to_timezone_lookup.csv'
 
+    db_path = pathlib.Path(__file__).parent / 'postcode_to_timezone_lookup.csv'
+    logger.info('Writing %d entries to %s', len(lookup_table), db_path)
     lookup_table.to_csv(db_path, index=False, header=False)
 
 

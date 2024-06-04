@@ -25,7 +25,7 @@ def _country_regexes():
     with open('postcode_regex.json') as f:
         postcode_spec = json.load(f)
     return {
-        spec['abbrev'].lower(): re.compile(f'^{spec["postal"]}$')
+        spec['abbrev'].lower(): re.compile(f'^{spec["postal"].lower()}$')
         for spec in postcode_spec
         if "postal" in spec  # Exclude countries without postal code
     }
