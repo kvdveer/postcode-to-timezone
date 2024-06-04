@@ -73,7 +73,11 @@ def get_tz(country_code: str, postcode: str) -> typing.Optional[str]:
     postcode = normalize_postcode(country_code, postcode)
 
     lut = _postcodes_lookup()
-    i = bisect.bisect_left(lut, (country_code, postcode, ''))
-    if i != len(lut) and lut[i][0] == country_code:
-        return lut[i][2]
+    # Add ascii character 255 to the end of the postcode to ensure that the
+    # lookup never returns an exact match. This places the insertion point
+    # after the last postcode, so we need to shift it by 1 to get the exact
+    # match.
+    i = bisect.bisect(lut, (country_code, postcode + '\xff'))
+    if i != 0 and i != len(lut) and lut[i-1][0] == country_code:
+        return lut[i-1][2]
     return None
