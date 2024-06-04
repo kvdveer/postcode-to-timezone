@@ -3,9 +3,24 @@ import functools
 import json
 import pathlib
 import re
+import typing
 
 
-@functools.cache
+def cache_fn(fn):
+    sentinel = object()
+    cache = sentinel
+
+    @functools.wraps(fn)
+    def wrapper():
+        nonlocal cache
+        if cache is sentinel:
+            cache = fn()
+        return cache
+
+    return wrapper
+
+
+@cache_fn
 def _country_regexes():
     with open('postcode_regex.json') as f:
         postcode_spec = json.load(f)
@@ -45,7 +60,7 @@ def normalize_postcode(country_code: str, postcode: str, *, validate=False):
     return "".join(filter(str.isalnum, postcode))
 
 
-@functools.cache
+@cache_fn
 def _postcodes_lookup():
     db_path = pathlib.Path(__file__).parent / 'postcode_to_timezone_lookup.csv'
 
@@ -53,7 +68,7 @@ def _postcodes_lookup():
         return [tuple(line.strip().split(',')) for line in f]
 
 
-def get_tz(country_code: str, postcode: str) -> str | None:
+def get_tz(country_code: str, postcode: str) -> typing.Optional[str]:
     country_code = country_code.lower()
     postcode = normalize_postcode(country_code, postcode)
 
