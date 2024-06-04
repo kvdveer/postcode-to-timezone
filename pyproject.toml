@@ -1,6 +1,6 @@
 [project]
 name = "postcode-to-timezone"
-version = "2024.6.4"
+version = "2024.6.4.1"
 dependencies = []
 
 description = "Converts postcodes to timezones"
