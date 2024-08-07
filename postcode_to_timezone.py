@@ -17,6 +17,7 @@ dependents_map = {
     "NC": "FR",  # New Caledonia
     "PF": "FR",  # French Polynesia
     "RE": "FR",  # Réunion
+
     # United Kingdom
     "AI": "GB",  # Anguilla, uses postcode AI-2640 (not in the lookup table)
     "IO": "GB",  # British Indian Ocean Territory
@@ -25,16 +26,42 @@ dependents_map = {
     "MS": "GB",  # Montserrat, uses postcodes MSR1xxx
     "PN": "GB",  # Pitcairn Islands, uses postcodes PCRN 1ZZ
     "VG": "GB",  # British Virgin Islands, uses postcodes VG11xx
+    "TA": "GB",  # Tristan da Cunha, uses TDCU 1ZZ
+
     # United States
     "AS": "US",  # American Samoa, 96799
     "GU": "US",  # Guam, 96910–96932
     "MP": "US",  # Northern Mariana Islands, 96950-96952
     "PR": "US",  # Puerto Rico, 006xx-009xx
     "VI": "US",  # U.S. Virgin Islands, 008xx
+
     # Netherlands
     "BQ": "NL",  # Bonaire, Sint Eustatius and Saba (has no actual postcodes)
     "CW": "NL",  # Curaçao, uses 0000xx
     "SX": "NL",  # Sint Maarten, uses 17xx xx
+
+    # China
+    "HK": "CN",  # Hong Kong, uses 999077
+    "MO": "CN",  # Macau, uses 999078
+
+    # Norway
+    "SJ": "NO",  # Svalbard and Jan Mayen, uses 917x
+
+    # New Zealand
+    "CK": "NZ",  # Cook Islands (no postcode system)
+    "NU": "NZ",  # Niue, uses 9974
+    "TK": "NZ",  # Tokelau, (no postcode system)
+
+    # Australia
+    "CC": "AU",  # Cocos (Keeling) Islands, uses WA 6799
+    "CX": "AU",  # Christmas Island, uses WA 6798
+    "NF": "AU",  # Norfolk Island, uses 2899
+
+    # Spain
+    "EA": "ES",  # Ceuta and Melilla, uses 5100x
+
+    # Sweden
+    "AX": "FI",  # Åland Islands, uses AX22000–AX22999
 }
 
 
