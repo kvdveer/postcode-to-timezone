@@ -5,6 +5,38 @@ import pathlib
 import re
 import typing
 
+# Some countries have were colonies at some point but now use their own
+# country code. Several still use the colonizer's postal code system.
+# This is a mapping of the dependency's country code to the colonizer's
+# country code.
+dependents_map = {
+    # France, uses postcodes 97XXX and 98XXX.
+    "GF": "FR",  # French Guiana
+    "GP": "FR",  # Guadeloupe
+    "MQ": "FR",  # Martinique
+    "NC": "FR",  # New Caledonia
+    "PF": "FR",  # French Polynesia
+    "RE": "FR",  # Réunion
+    # United Kingdom
+    "AI": "GB",  # Anguilla, uses postcode AI-2640 (not in the lookup table)
+    "IO": "GB",  # British Indian Ocean Territory
+    "JE": "GB",  # Jersey, uses postcode JE1 1AA - JE5 999
+    "KY": "GB",  # Cayman Islands, uses postcodes KYx-xxxx
+    "MS": "GB",  # Montserrat, uses postcodes MSR1xxx
+    "PN": "GB",  # Pitcairn Islands, uses postcodes PCRN 1ZZ
+    "VG": "GB",  # British Virgin Islands, uses postcodes VG11xx
+    # United States
+    "AS": "US",  # American Samoa, 96799
+    "GU": "US",  # Guam, 96910–96932
+    "MP": "US",  # Northern Mariana Islands, 96950-96952
+    "PR": "US",  # Puerto Rico, 006xx-009xx
+    "VI": "US",  # U.S. Virgin Islands, 008xx
+    # Netherlands
+    "BQ": "NL",  # Bonaire, Sint Eustatius and Saba (has no actual postcodes)
+    "CW": "NL",  # Curaçao, uses 0000xx
+    "SX": "NL",  # Sint Maarten, uses 17xx xx
+}
+
 
 def cache_fn(fn):
     sentinel = object()
@@ -78,6 +110,11 @@ def get_tz(country_code: str, postcode: str) -> typing.Optional[str]:
     # after the last postcode, so we need to shift it by 1 to get the exact
     # match.
     i = bisect.bisect(lut, (country_code, postcode + '\xff'))
-    if i != 0 and i != len(lut) and lut[i-1][0] == country_code:
-        return lut[i-1][2]
+    if i != 0 and i != len(lut) and lut[i - 1][0] == country_code:
+        return lut[i - 1][2]
+
+    if country_code in dependents_map:
+        # Retry with the (former?) parent country code
+        return get_tz(dependents_map[country_code], postcode)
+
     return None
