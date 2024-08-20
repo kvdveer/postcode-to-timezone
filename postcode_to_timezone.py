@@ -11,57 +11,57 @@ import typing
 # country code.
 dependents_map = {
     # France, uses postcodes 97XXX and 98XXX.
-    "GF": "FR",  # French Guiana
-    "GP": "FR",  # Guadeloupe
-    "MQ": "FR",  # Martinique
-    "NC": "FR",  # New Caledonia
-    "PF": "FR",  # French Polynesia
-    "RE": "FR",  # Réunion
+    "gf": "fr",  # French Guiana
+    "gp": "fr",  # Guadeloupe
+    "mq": "fr",  # Martinique
+    "nc": "fr",  # New Caledonia
+    "pf": "fr",  # French Polynesia
+    "re": "fr",  # Réunion
 
     # United Kingdom
-    "AI": "GB",  # Anguilla, uses postcode AI-2640 (not in the lookup table)
-    "IO": "GB",  # British Indian Ocean Territory
-    "JE": "GB",  # Jersey, uses postcode JE1 1AA - JE5 999
-    "KY": "GB",  # Cayman Islands, uses postcodes KYx-xxxx
-    "MS": "GB",  # Montserrat, uses postcodes MSR1xxx
-    "PN": "GB",  # Pitcairn Islands, uses postcodes PCRN 1ZZ
-    "VG": "GB",  # British Virgin Islands, uses postcodes VG11xx
-    "TA": "GB",  # Tristan da Cunha, uses TDCU 1ZZ
+    "ai": "gb",  # Anguilla, uses postcode AI-2640 (not in the lookup table)
+    "io": "gb",  # British Indian Ocean Territory
+    "je": "gb",  # Jersey, uses postcode JE1 1AA - JE5 999
+    "ky": "gb",  # Cayman Islands, uses postcodes KYx-xxxx
+    "ms": "gb",  # Montserrat, uses postcodes MSR1xxx
+    "pn": "gb",  # Pitcairn Islands, uses postcodes PCRN 1ZZ
+    "vg": "gb",  # British Virgin Islands, uses postcodes VG11xx
+    "ta": "gb",  # Tristan da Cunha, uses TDCU 1ZZ
 
     # United States
-    "AS": "US",  # American Samoa, 96799
-    "GU": "US",  # Guam, 96910–96932
-    "MP": "US",  # Northern Mariana Islands, 96950-96952
-    "PR": "US",  # Puerto Rico, 006xx-009xx
-    "VI": "US",  # U.S. Virgin Islands, 008xx
+    "as": "us",  # American Samoa, 96799
+    "gu": "us",  # Guam, 96910–96932
+    "mp": "us",  # Northern Mariana Islands, 96950-96952
+    "pr": "us",  # Puerto Rico, 006xx-009xx
+    "vi": "us",  # U.S. Virgin Islands, 008xx
 
     # Netherlands
-    "BQ": "NL",  # Bonaire, Sint Eustatius and Saba (has no actual postcodes)
-    "CW": "NL",  # Curaçao, uses 0000xx
-    "SX": "NL",  # Sint Maarten, uses 17xx xx
+    "bq": "nl",  # Bonaire, Sint Eustatius and Saba (has no actual postcodes)
+    "cw": "nl",  # Curaçao, uses 0000xx
+    "sx": "nl",  # Sint Maarten, uses 17xx xx
 
     # China
-    "HK": "CN",  # Hong Kong, uses 999077
-    "MO": "CN",  # Macau, uses 999078
+    "hk": "cn",  # Hong Kong, uses 999077
+    "mo": "cn",  # Macau, uses 999078
 
     # Norway
-    "SJ": "NO",  # Svalbard and Jan Mayen, uses 917x
+    "sj": "no",  # Svalbard and Jan Mayen, uses 917x
 
     # New Zealand
-    "CK": "NZ",  # Cook Islands (no postcode system)
-    "NU": "NZ",  # Niue, uses 9974
-    "TK": "NZ",  # Tokelau, (no postcode system)
+    "ck": "nz",  # Cook Islands (no postcode system)
+    "nu": "nz",  # Niue, uses 9974
+    "tk": "nz",  # Tokelau, (no postcode system)
 
     # Australia
-    "CC": "AU",  # Cocos (Keeling) Islands, uses WA 6799
-    "CX": "AU",  # Christmas Island, uses WA 6798
-    "NF": "AU",  # Norfolk Island, uses 2899
+    "cc": "au",  # Cocos (Keeling) Islands, uses WA 6799
+    "cx": "au",  # Christmas Island, uses WA 6798
+    "nf": "au",  # Norfolk Island, uses 2899
 
     # Spain
-    "EA": "ES",  # Ceuta and Melilla, uses 5100x
+    "ea": "es",  # Ceuta and Melilla, uses 5100x
 
     # Sweden
-    "AX": "FI",  # Åland Islands, uses AX22000–AX22999
+    "ax": "fi",  # Åland Islands, uses AX22000–AX22999
 }
 
 
@@ -127,7 +127,9 @@ def _postcodes_lookup():
         return [tuple(line.strip().split(',')) for line in f]
 
 
-def get_tz(country_code: str, postcode: str) -> typing.Optional[str]:
+def get_tz(country_code: str,
+           postcode: str,
+           fallback: typing.Optional[str] = "UTC") -> typing.Optional[str]:
     country_code = country_code.lower()
     postcode = normalize_postcode(country_code, postcode)
 
@@ -144,4 +146,4 @@ def get_tz(country_code: str, postcode: str) -> typing.Optional[str]:
         # Retry with the (former?) parent country code
         return get_tz(dependents_map[country_code], postcode)
 
-    return None
+    return fallback
