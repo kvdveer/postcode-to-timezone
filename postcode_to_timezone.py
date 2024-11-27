@@ -110,7 +110,7 @@ def normalize_postcode(country_code: str, postcode: str, *, validate=False):
         re_postcode = _country_regexes().get(country_code)
         if re_postcode is not None:
             # print(re_postcode)
-            match = re_postcode.match(postcode)
+            match = re_postcode.match(postcode) or re_postcode.match(postcode.replace(' ', '').replace('-', ''))
             if match:
                 postcode = match.group(0).lower()
             else:
