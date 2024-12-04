@@ -81,8 +81,10 @@ def cache_fn(fn):
 
 @cache_fn
 def _country_regexes():
-    with open('postcode_regex.json') as f:
+    db_path = pathlib.Path(__file__).parent / 'postcode_regex.json'
+    with db_path.open() as f:
         postcode_spec = json.load(f)
+
     return {
         spec['abbrev'].lower(): re.compile(f'^{spec["postal"].lower()}$')
         for spec in postcode_spec
